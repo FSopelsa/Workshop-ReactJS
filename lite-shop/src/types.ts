@@ -2,6 +2,14 @@ export type BadgeTone = 'rose' | 'amber' | 'blue' | 'dark'
 
 export type StockStatus = 'in-stock' | 'low' | 'sold-out'
 
+export interface Filters {
+  // An empty list means "All Products"
+  categories: string[]
+  maxPrice: number
+  inStock: boolean
+  onSale: boolean
+}
+
 export interface Product {
   id: number
   name: string

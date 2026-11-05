@@ -4,17 +4,25 @@ import Header from './components/Header'
 import Newsletter from './components/Newsletter'
 import ProductList from './components/ProductList'
 import Sidebar from './components/Sidebar'
-import { products } from './data/products'
+import { highestPrice, products } from './data/products'
+import type { Filters } from './types'
 
 export default function App() {
   const [search, setSearch] = useState('')
-  // An empty list means "All Products"
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([])
+  const [filters, setFilters] = useState<Filters>({
+    categories: [],
+    maxPrice: highestPrice,
+    inStock: false,
+    onSale: false,
+  })
 
   const query = search.trim().toLowerCase()
   const visibleProducts = products.filter(
     (product) =>
-      (selectedCategories.length === 0 || selectedCategories.includes(product.category)) &&
+      (filters.categories.length === 0 || filters.categories.includes(product.category)) &&
+      product.price <= filters.maxPrice &&
+      (!filters.inStock || product.stockStatus !== 'sold-out') &&
+      (!filters.onSale || product.originalPrice !== undefined) &&
       product.name.toLowerCase().includes(query),
   )
 
@@ -23,11 +31,7 @@ export default function App() {
       <Header search={search} onSearchChange={setSearch} />
       <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
-          <Sidebar
-            products={products}
-            selectedCategories={selectedCategories}
-            onCategoriesChange={setSelectedCategories}
-          />
+          <Sidebar products={products} filters={filters} onFiltersChange={setFilters} />
           <ProductList title="Recommended for you" products={visibleProducts} />
         </div>
       </main>

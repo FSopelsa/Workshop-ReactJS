@@ -1,5 +1,6 @@
 import { ChevronDown } from 'lucide-react'
-import type { Product } from '../types'
+import { highestPrice } from '../data/products'
+import type { Filters, Product } from '../types'
 import CheckboxOption from './CheckboxOption'
 import FilterSection from './FilterSection'
 import Panel from './Panel'
@@ -7,23 +8,22 @@ import PromoCard from './PromoCard'
 
 interface SidebarProps {
   products: Product[]
-  selectedCategories: string[]
-  onCategoriesChange: (categories: string[]) => void
+  filters: Filters
+  onFiltersChange: (filters: Filters) => void
 }
 
-const availability = ['In Stock', 'On Sale']
-
-const MAX_PRICE = 1800
-
-export default function Sidebar({ products, selectedCategories, onCategoriesChange }: SidebarProps) {
+export default function Sidebar({ products, filters, onFiltersChange }: SidebarProps) {
   const categories = [...new Set(products.map((product) => product.category))]
 
+  // Copy the current filters and overwrite only the changed fields
+  const updateFilters = (changes: Partial<Filters>) => onFiltersChange({ ...filters, ...changes })
+
   const toggleCategory = (category: string) =>
-    onCategoriesChange(
-      selectedCategories.includes(category)
-        ? selectedCategories.filter((selected) => selected !== category)
-        : [...selectedCategories, category],
-    )
+    updateFilters({
+      categories: filters.categories.includes(category)
+        ? filters.categories.filter((selected) => selected !== category)
+        : [...filters.categories, category],
+    })
 
   return (
     <aside className="lg:col-span-3 lg:sticky lg:top-20 self-start">
@@ -40,15 +40,15 @@ export default function Sidebar({ products, selectedCategories, onCategoriesChan
             <CheckboxOption
               label="All Products"
               count={products.length}
-              checked={selectedCategories.length === 0}
-              onChange={() => onCategoriesChange([])}
+              checked={filters.categories.length === 0}
+              onChange={() => updateFilters({ categories: [] })}
             />
             {categories.map((category) => (
               <CheckboxOption
                 key={category}
                 label={category}
                 count={products.filter((product) => product.category === category).length}
-                checked={selectedCategories.includes(category)}
+                checked={filters.categories.includes(category)}
                 onChange={() => toggleCategory(category)}
                 medium
               />
@@ -61,15 +61,16 @@ export default function Sidebar({ products, selectedCategories, onCategoriesChan
         <FilterSection title="Price Range" spacing="space-y-3">
           <div className="flex items-center justify-between text-xs text-slate-500">
             <span>0 kr</span>
-            <span>{MAX_PRICE} kr</span>
+            <span>Up to {filters.maxPrice} kr</span>
           </div>
           <input
             type="range"
             min={0}
-            max={MAX_PRICE}
-            defaultValue={MAX_PRICE / 2}
+            max={highestPrice}
+            value={filters.maxPrice}
+            onChange={(event) => updateFilters({ maxPrice: Number(event.target.value) })}
             className="w-full accent-blue-500"
-            aria-label="Price range"
+            aria-label="Maximum price"
           />
         </FilterSection>
 
@@ -77,9 +78,16 @@ export default function Sidebar({ products, selectedCategories, onCategoriesChan
 
         <FilterSection title="Availability">
           <div className="space-y-3">
-            {availability.map((label) => (
-              <CheckboxOption key={label} label={label} />
-            ))}
+            <CheckboxOption
+              label="In Stock"
+              checked={filters.inStock}
+              onChange={() => updateFilters({ inStock: !filters.inStock })}
+            />
+            <CheckboxOption
+              label="On Sale"
+              checked={filters.onSale}
+              onChange={() => updateFilters({ onSale: !filters.onSale })}
+            />
           </div>
         </FilterSection>
 
