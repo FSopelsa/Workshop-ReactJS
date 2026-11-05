@@ -16,7 +16,12 @@ export default function ProductList({ title, products }: ProductListProps) {
     <section className="lg:col-span-9">
       <Panel>
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <h1 className="text-xl font-bold tracking-tight text-slate-900">{title}</h1>
+          <div>
+            <h1 className="text-xl font-bold tracking-tight text-slate-900">{title}</h1>
+            <p className="text-xs text-slate-500">
+              {products.length} {products.length === 1 ? 'product' : 'products'}
+            </p>
+          </div>
 
           <label className="inline-flex items-center gap-2 text-sm text-slate-600">
             <span className="hidden sm:inline">Sort by:</span>
@@ -38,11 +43,15 @@ export default function ProductList({ title, products }: ProductListProps) {
 
         <div className="mt-5 h-px bg-slate-100"></div>
 
-        <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {products.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
-        </div>
+        {products.length === 0 ? (
+          <p className="mt-6 py-16 text-center text-sm text-slate-500">No products match your search or filters.</p>
+        ) : (
+          <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {products.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </div>
+        )}
 
         <Pagination currentPage={1} pages={[1, 2, 3]} lastPage={12} />
       </Panel>

@@ -1,21 +1,30 @@
 import { ChevronDown } from 'lucide-react'
+import type { Product } from '../types'
 import CheckboxOption from './CheckboxOption'
 import FilterSection from './FilterSection'
 import Panel from './Panel'
 import PromoCard from './PromoCard'
 
-const categories = [
-  { label: 'All Products', count: 124 },
-  { label: 'Outerwear', count: 42 },
-  { label: 'Footwear', count: 18 },
-  { label: 'Accessories', count: 64 },
-]
+interface SidebarProps {
+  products: Product[]
+  selectedCategories: string[]
+  onCategoriesChange: (categories: string[]) => void
+}
 
 const availability = ['In Stock', 'On Sale']
 
 const MAX_PRICE = 1800
 
-export default function Sidebar() {
+export default function Sidebar({ products, selectedCategories, onCategoriesChange }: SidebarProps) {
+  const categories = [...new Set(products.map((product) => product.category))]
+
+  const toggleCategory = (category: string) =>
+    onCategoriesChange(
+      selectedCategories.includes(category)
+        ? selectedCategories.filter((selected) => selected !== category)
+        : [...selectedCategories, category],
+    )
+
   return (
     <aside className="lg:col-span-3 lg:sticky lg:top-20 self-start">
       <Panel>
@@ -28,8 +37,21 @@ export default function Sidebar() {
           }
         >
           <div className="space-y-3">
-            {categories.map(({ label, count }, index) => (
-              <CheckboxOption key={label} label={label} count={count} defaultChecked={index === 0} medium={index > 0} />
+            <CheckboxOption
+              label="All Products"
+              count={products.length}
+              checked={selectedCategories.length === 0}
+              onChange={() => onCategoriesChange([])}
+            />
+            {categories.map((category) => (
+              <CheckboxOption
+                key={category}
+                label={category}
+                count={products.filter((product) => product.category === category).length}
+                checked={selectedCategories.includes(category)}
+                onChange={() => toggleCategory(category)}
+                medium
+              />
             ))}
           </div>
         </FilterSection>
