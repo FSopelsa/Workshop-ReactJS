@@ -30,9 +30,9 @@ export default function ProductCard({ product }: ProductCardProps) {
   const soldOut = stockStatus === 'sold-out'
 
   return (
-    <article className="border border-slate-200 rounded-[1.25rem] bg-white p-3 transition-all duration-400 hover:border-blue-400 hover:shadow-[0_25px_50px_-12px_rgba(0,0,0,0.08)] hover:-translate-y-1.5 group">
+    <article className="border border-slate-200 rounded-[1.25rem] bg-white p-3 dark:border-slate-800 dark:bg-slate-900 transition-all duration-400 hover:border-blue-400 hover:shadow-[0_25px_50px_-12px_rgba(0,0,0,0.08)] hover:-translate-y-1.5 group">
       <div
-        className={`relative overflow-hidden rounded-2xl bg-slate-100 ${soldOut ? 'grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-500' : ''}`}
+        className={`relative overflow-hidden rounded-2xl bg-slate-100 dark:bg-slate-800 ${soldOut ? 'grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-500' : ''}`}
       >
         <img
           src={image}
@@ -84,7 +84,7 @@ export default function ProductCard({ product }: ProductCardProps) {
           </div>
         </div>
 
-        <h3 className="text-sm font-bold text-slate-900 group-hover:text-blue-600 transition-colors">{name}</h3>
+        <h3 className="text-sm font-bold text-slate-900 dark:text-white group-hover:text-blue-600 transition-colors">{name}</h3>
         <p className={`text-[11px] ${stockStyles[stockStatus]}`}>{stockText}</p>
 
         <div className="flex items-center justify-between gap-3 pt-3">
@@ -94,7 +94,7 @@ export default function ProductCard({ product }: ProductCardProps) {
                 {formatPrice(originalPrice)}
               </span>
             )}
-            <span className={`text-lg font-black tracking-tight ${soldOut ? 'text-slate-400' : 'text-slate-900'}`}>
+            <span className={`text-lg font-black tracking-tight ${soldOut ? 'text-slate-400' : 'text-slate-900 dark:text-white'}`}>
               {formatPrice(price)}
             </span>
           </div>
@@ -103,7 +103,7 @@ export default function ProductCard({ product }: ProductCardProps) {
             type="button"
             aria-label="Add to cart"
             disabled={soldOut}
-            className={`inline-flex h-10 items-center justify-center gap-2 rounded-xl px-5 text-xs font-bold transition-all duration-300 ${soldOut ? 'bg-slate-100 text-slate-400 cursor-not-allowed' : 'bg-slate-900 text-white hover:bg-blue-600 hover:shadow-lg hover:shadow-blue-200 active:scale-95'}`}
+            className={`inline-flex h-10 items-center justify-center gap-2 rounded-xl px-5 text-xs font-bold transition-all duration-300 ${soldOut ? 'bg-slate-100 text-slate-400 cursor-not-allowed dark:bg-slate-800' : 'bg-slate-900 text-white hover:bg-blue-600 hover:shadow-lg hover:shadow-blue-200 active:scale-95 dark:bg-blue-600 dark:hover:bg-blue-500 dark:hover:shadow-blue-900'}`}
           >
             {soldOut ? 'Notify Me' : 'Add to cart'}
           </button>

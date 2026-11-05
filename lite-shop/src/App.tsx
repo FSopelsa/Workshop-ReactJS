@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Footer from './components/Footer'
 import Header from './components/Header'
 import Newsletter from './components/Newsletter'
@@ -25,6 +25,11 @@ export default function App() {
       (!filters.onSale || product.originalPrice !== undefined) &&
       product.name.toLowerCase().includes(query),
   )
+
+  // The browser tab title lives outside React, so keep it in sync with an effect
+  useEffect(() => {
+    document.title = `LITE.SHOP — Product Listing (${visibleProducts.length})`
+  }, [visibleProducts.length])
 
   return (
     <>

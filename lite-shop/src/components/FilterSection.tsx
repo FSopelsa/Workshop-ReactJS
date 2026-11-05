@@ -13,7 +13,7 @@ export default function FilterSection({ title, action, spacing = 'space-y-4', ch
   return (
     <section aria-labelledby={titleId} className={spacing}>
       <div className="flex items-center justify-between">
-        <h2 id={titleId} className="text-sm font-bold text-slate-900">
+        <h2 id={titleId} className="text-sm font-bold text-slate-900 dark:text-white">
           {title}
         </h2>
         {action}

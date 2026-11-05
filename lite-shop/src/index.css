@@ -1,1 +1,8 @@
 @import "tailwindcss";
+
+/* Dark styles follow the .dark class that ThemeProvider sets on <html> */
+@custom-variant dark (&:where(.dark, .dark *));
+
+.dark {
+  color-scheme: dark;
+}

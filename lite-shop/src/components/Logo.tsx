@@ -6,7 +6,7 @@ interface LogoProps {
 
 const variants = {
   light: { link: 'text-white', box: 'bg-white text-blue-600 shadow-md' },
-  dark: { link: 'text-slate-900', box: 'bg-blue-600 text-white shadow-lg' },
+  dark: { link: 'text-slate-900 dark:text-white', box: 'bg-blue-600 text-white shadow-lg' },
 }
 
 export default function Logo({ variant }: LogoProps) {

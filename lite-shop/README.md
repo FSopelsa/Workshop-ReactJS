@@ -16,6 +16,7 @@ npm run lint     # run oxlint
 ```
 src/
 ├── App.tsx              # page layout, composes the top-level components
+├── theme.ts             # ThemeContext and the useTheme hook
 ├── types.ts             # Product and Filters types
 ├── data/products.ts     # product data and the highest price
 └── components/          # all UI components
@@ -25,16 +26,17 @@ src/
 
 | Component | Purpose | Props |
 | --- | --- | --- |
-| `App` | Page layout: header, sidebar + product list, newsletter, footer. Holds the search text and a `filters` object (categories, max price, in stock, on sale) in `useState` and filters the products. | – |
-| `Header` | Sticky top bar with logo, nav links, controlled search field and icon buttons. | `search`, `onSearchChange` |
+| `App` | Page layout: header, sidebar + product list, newsletter, footer. Holds the search text and a `filters` object (categories, max price, in stock, on sale) in `useState` and filters the products. A `useEffect` keeps the browser tab title in sync with the number of matching products. | – |
+| `Header` | Sticky top bar with logo, nav links, controlled search field, dark/light toggle (reads `useTheme()`) and icon buttons. | `search`, `onSearchChange` |
 | `Logo` | Brand logo, used in the header and the footer. | `variant` (`'light'` or `'dark'`) |
-| `IconButton` | Square icon button (cart, account, mobile menu). | `label`, `children` (the icon), `className?` |
+| `IconButton` | Square icon button (theme toggle, cart, account, mobile menu). | `label`, `children` (the icon), `className?`, `onClick?` |
+| `ThemeProvider` | Holds the current theme in `useState`, shares it through `ThemeContext`, and toggles the `dark` class on `<html>` in a `useEffect`. | `children` |
 | `Panel` | Rounded, bordered card container shared by the sidebar and the product list. | `children` |
 | `Sidebar` | Filter column: categories, price range, availability and promo card. Category names, counts and the slider's maximum are computed from the product data. | `products`, `filters`, `onFiltersChange` |
 | `FilterSection` | Titled group inside the sidebar. | `title`, `action?`, `spacing?`, `children` |
 | `CheckboxOption` | One labelled checkbox with an optional item count. | `label`, `count?`, `checked?`, `onChange?`, `medium?` |
 | `PromoCard` | Gradient "Summer Sale" call-to-action. | `title`, `text`, `buttonLabel` |
-| `ProductList` | Main panel: heading with product count, sort dropdown, product grid (or an empty-state message) and pagination. | `title`, `products` |
+| `ProductList` | Main panel: heading with product count, sort dropdown (its own `useState`, since no other component needs it), product grid (or an empty-state message) and pagination. | `title`, `products` |
 | `ProductCard` | One product: image, badge, rating, stock text, prices and buttons. Switches to a sold-out look when `stockStatus` is `'sold-out'`. | `product` |
 | `Pagination` | Previous/next buttons and page numbers. | `currentPage`, `pages`, `lastPage` |
 | `Newsletter` | Dark sign-up banner with email form. | – |
@@ -53,9 +55,13 @@ State lives in `App`, the closest common parent of the components that use it. `
 
 `App` renders `Header`, then a two-column grid with `Sidebar` and `ProductList`, followed by `Newsletter` and `Footer`. `Sidebar` is built from `Panel`, `FilterSection`, `CheckboxOption` and `PromoCard`. `ProductList` is a `Panel` that maps the `products` array to `ProductCard`s and ends with `Pagination`. `Logo` is shared by `Header` and `Footer`.
 
+## Dark mode with useContext
+
+`main.tsx` wraps `App` in `ThemeProvider`. Any component can call `useTheme()` to read `theme` and `toggleTheme` without props being passed through every level; today only `Header` does, for its toggle button. Components style themselves with Tailwind `dark:` classes, which apply when `<html>` has the `dark` class. The first theme follows the operating system setting.
+
 ## Notes
 
-- Search (by product name), categories, maximum price, In Stock and On Sale filter the grid; all active filters must match. Sorting and pagination are still layout only.
+- Search (by product name), categories, maximum price, In Stock and On Sale filter the grid; all active filters must match. The sort dropdown orders the visible products by data order (Newest), price or rating ("Best Selling" uses rating, since the data has no sales numbers). Pagination is still layout only.
 - The price slider goes up to the most expensive product, so every product is visible by default.
 - Twitter and Instagram icons in the footer are inline SVG because `lucide-react` no longer ships brand icons.
 - Product images load from Unsplash.

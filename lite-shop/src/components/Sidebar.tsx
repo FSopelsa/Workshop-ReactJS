@@ -56,7 +56,7 @@ export default function Sidebar({ products, filters, onFiltersChange }: SidebarP
           </div>
         </FilterSection>
 
-        <div className="my-5 h-px bg-slate-100"></div>
+        <div className="my-5 h-px bg-slate-100 dark:bg-slate-800"></div>
 
         <FilterSection title="Price Range" spacing="space-y-3">
           <div className="flex items-center justify-between text-xs text-slate-500">
@@ -74,7 +74,7 @@ export default function Sidebar({ products, filters, onFiltersChange }: SidebarP
           />
         </FilterSection>
 
-        <div className="my-5 h-px bg-slate-100"></div>
+        <div className="my-5 h-px bg-slate-100 dark:bg-slate-800"></div>
 
         <FilterSection title="Availability">
           <div className="space-y-3">

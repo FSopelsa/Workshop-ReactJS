@@ -9,7 +9,7 @@ interface PaginationProps {
 const buttonBase =
   'inline-flex h-9 w-9 items-center justify-center rounded-lg border font-medium transition-all duration-200'
 const buttonIdle =
-  'border-slate-200 bg-white text-slate-500 hover:border-blue-400 hover:text-blue-600 hover:bg-blue-50'
+  'border-slate-200 bg-white text-slate-500 hover:border-blue-400 hover:text-blue-600 hover:bg-blue-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-400 dark:hover:bg-slate-800'
 const buttonActive = 'border-blue-600 bg-blue-600 text-white'
 
 export default function Pagination({ currentPage, pages, lastPage }: PaginationProps) {

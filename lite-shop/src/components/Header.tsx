@@ -1,4 +1,5 @@
-import { Menu, Search, ShoppingBag, User } from 'lucide-react'
+import { Menu, Moon, Search, ShoppingBag, Sun, User } from 'lucide-react'
+import { useTheme } from '../theme'
 import IconButton from './IconButton'
 import Logo from './Logo'
 
@@ -10,6 +11,8 @@ interface HeaderProps {
 }
 
 export default function Header({ search, onSearchChange }: HeaderProps) {
+  const { theme, toggleTheme } = useTheme()
+
   return (
     <header className="sticky top-0 z-40 border-b border-blue-700/30 bg-blue-600 shadow-lg shadow-blue-900/10">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -49,6 +52,9 @@ export default function Header({ search, onSearchChange }: HeaderProps) {
               <Search size={16} strokeWidth={2.5} className="absolute left-3.5 top-3 text-blue-200" />
             </div>
 
+            <IconButton label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'} onClick={toggleTheme}>
+              {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
+            </IconButton>
             <IconButton label="Cart">
               <ShoppingBag size={20} />
             </IconButton>

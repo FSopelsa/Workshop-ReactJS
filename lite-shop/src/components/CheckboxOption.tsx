@@ -13,9 +13,9 @@ export default function CheckboxOption({ label, count, checked, onChange, medium
         type="checkbox"
         checked={checked}
         onChange={onChange}
-        className="h-[1.125rem] w-[1.125rem] rounded-[0.375rem] border border-slate-200 accent-blue-600 cursor-pointer"
+        className="h-[1.125rem] w-[1.125rem] rounded-[0.375rem] border border-slate-200 dark:border-slate-700 accent-blue-600 cursor-pointer"
       />
-      <span className={`flex-1 text-sm text-slate-700 ${medium ? 'font-medium' : ''}`}>
+      <span className={`flex-1 text-sm text-slate-700 dark:text-slate-300 ${medium ? 'font-medium' : ''}`}>
         {label}
         {count !== undefined && <span className="text-slate-400 font-normal"> ({count})</span>}
       </span>

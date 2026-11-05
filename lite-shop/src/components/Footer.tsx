@@ -10,7 +10,7 @@ const linkColumns = [
 const legalLinks = ['Privacy Policy', 'Terms of Service']
 
 const socialLinkClass =
-  'h-10 w-10 flex items-center justify-center rounded-full bg-slate-100 text-slate-600 transition-colors hover:bg-blue-600 hover:text-white'
+  'h-10 w-10 flex items-center justify-center rounded-full bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300 transition-colors hover:bg-blue-600 hover:text-white'
 
 const svgProps = {
   xmlns: 'http://www.w3.org/2000/svg',
@@ -26,7 +26,7 @@ const svgProps = {
 
 export default function Footer() {
   return (
-    <footer className="bg-white pt-20 pb-10 border-t border-slate-200">
+    <footer className="bg-white pt-20 pb-10 border-t border-slate-200 dark:bg-slate-950 dark:border-slate-800">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-2 gap-12 md:grid-cols-4 lg:grid-cols-5">
           <div className="col-span-2 lg:col-span-2 space-y-6">
@@ -57,7 +57,7 @@ export default function Footer() {
           ))}
         </div>
 
-        <div className="mt-20 border-t border-slate-100 pt-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mt-20 border-t border-slate-100 dark:border-slate-800 pt-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">
             &copy; 2026 LITE.SHOP. All rights reserved.
           </p>
@@ -66,7 +66,7 @@ export default function Footer() {
               <a
                 key={link}
                 href="#"
-                className="text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-slate-900 transition-colors"
+                className="text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
               >
                 {link}
               </a>
