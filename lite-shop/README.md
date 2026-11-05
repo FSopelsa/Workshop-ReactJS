@@ -4,12 +4,30 @@ A static product-listing page for a fictional online shop, built with React, Vit
 
 ## Quick start
 
+Requires Node.js 20.19+ or 22.12+ (needed by Vite 8).
+
 ```bash
 npm install
-npm run dev      # start the dev server
-npm run build    # type-check and build for production
-npm run lint     # run oxlint
 ```
+
+### Develop: `npm run dev`
+
+Starts the Vite dev server and prints a local address, by default <http://localhost:5173/>. Open it in a browser to view the app. Changes you save in `src/` show up immediately without a reload. Stop the server with `Ctrl+C`.
+
+### Build: `npm run build`
+
+Type-checks the project with TypeScript (`tsc -b`), then bundles it into the `dist/` folder as plain HTML, CSS and JavaScript ready to host on any static web server. The build stops if there are type errors.
+
+To view the built app, run `npm run preview` and open the address it prints, by default <http://localhost:4173/>. Opening `dist/index.html` directly from the file system does not work, because the page loads its scripts from absolute `/assets/...` paths.
+
+### Lint: `npm run lint`
+
+Runs [oxlint](https://oxc.rs/docs/guide/usage/linter.html), a fast linter that scans the source code for likely bugs and bad patterns without running the app. Besides its default correctness checks, `.oxlintrc.json` enables two React rules:
+
+- `react/rules-of-hooks`: hooks such as `useState` must be called at the top level of a component or hook, never inside conditions or loops (reported as an error).
+- `react/only-export-components`: component files should only export components so Vite's fast refresh keeps working (reported as a warning).
+
+Lint only reports problems and never changes files. It does not check types; `npm run build` does that.
 
 ## Project structure
 
