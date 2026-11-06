@@ -29,6 +29,10 @@ Runs [oxlint](https://oxc.rs/docs/guide/usage/linter.html), a fast linter that s
 
 Lint only reports problems and never changes files. It does not check types; `npm run build` does that.
 
+### Test: `npm test`
+
+Runs the reducer tests in `src/productsReducer.test.ts` with Node's built-in test runner (`node --test`). No extra test library is needed; Node 22.18+ reads the TypeScript file directly.
+
 ## Project structure
 
 ```
@@ -36,7 +40,9 @@ src/
 ├── App.tsx              # page layout, composes the top-level components
 ├── theme.ts             # ThemeContext and the useTheme hook
 ├── types.ts             # Product and Filters types
-├── data/products.ts     # product data and the highest price
+├── productsReducer.ts   # useReducer logic for adding and deleting products
+├── productsReducer.test.ts  # tests for the reducer (npm test)
+├── data/products.ts     # starting product data
 └── components/          # all UI components
 ```
 
@@ -44,18 +50,19 @@ src/
 
 | Component | Purpose | Props |
 | --- | --- | --- |
-| `App` | Page layout: header, sidebar + product list, newsletter, footer. Holds the search text and a `filters` object (categories, max price, in stock, on sale) in `useState` and filters the products. A `useEffect` keeps the browser tab title in sync with the number of matching products. | – |
+| `App` | Page layout: header, sidebar + product list, newsletter, footer. Keeps the product list in `useReducer`. Holds the search text and a `filters` object (categories, max price, in stock, on sale) in `useState` and filters the products. A `useEffect` keeps the browser tab title in sync with the number of matching products. | – |
 | `Header` | Sticky top bar with logo, nav links, controlled search field, dark/light toggle (reads `useTheme()`) and icon buttons. Below the `md` breakpoint the Menu button opens a panel with the nav links, plus the search field on phones where the top-bar one is hidden (`menuOpen` state). | `search`, `onSearchChange` |
 | `Logo` | Brand logo, used in the header and the footer. | `variant` (`'light'` or `'dark'`) |
 | `IconButton` | Square icon button (theme toggle, cart, account, mobile menu). | `label`, `children` (the icon), `className?`, `onClick?`, `expanded?` |
 | `ThemeProvider` | Holds the current theme in `useState`, shares it through `ThemeContext`, and toggles the `dark` class on `<html>` in a `useEffect`. | `children` |
 | `Panel` | Rounded, bordered card container shared by the sidebar and the product list. | `children` |
-| `Sidebar` | Filter column: categories, price range, availability and promo card. Category names, counts and the slider's maximum are computed from the product data. | `products`, `filters`, `onFiltersChange` |
+| `Sidebar` | Filter column: categories, price range, availability and promo card. Category names, counts and the slider's maximum are computed from the current product list. | `products`, `filters`, `onFiltersChange` |
 | `FilterSection` | Titled group inside the sidebar. | `title`, `action?`, `spacing?`, `children` |
 | `CheckboxOption` | One labelled checkbox with an optional item count. | `label`, `count?`, `checked?`, `onChange?`, `medium?` |
 | `PromoCard` | Gradient "Summer Sale" call-to-action. | `title`, `text`, `buttonLabel` |
-| `ProductList` | Main panel: heading with product count, sort dropdown (its own `useState`, since no other component needs it), product grid (or an empty-state message) and pagination. | `title`, `products` |
-| `ProductCard` | One product: image, badge, rating, stock text, prices and buttons. Switches to a sold-out look when `stockStatus` is `'sold-out'`. | `product` |
+| `ProductList` | Main panel: heading with product count, "Add product" button that opens `AddProductForm`, sort dropdown (its own `useState`, since no other component needs it), product grid (or an empty-state message) and pagination. | `title`, `products`, `onAddProduct`, `onDeleteProduct` |
+| `AddProductForm` | Controlled form (name, category, price, image URL) for a new product, validated by the browser. | `onAdd`, `onClose` |
+| `ProductCard` | One product: image, badge, rating, stock text, prices and buttons. Switches to a sold-out look when `stockStatus` is `'sold-out'`, and has a delete button. | `product`, `onDelete` |
 | `Pagination` | Previous/next buttons and page numbers. | `currentPage`, `pages`, `lastPage` |
 | `Newsletter` | Dark sign-up banner with email form. | – |
 | `Footer` | Brand blurb, social links, link columns and legal links. | – |
@@ -72,6 +79,12 @@ src/
 State lives in `App`, the closest common parent of the components that use it. `Header` and `Sidebar` receive the current values plus callbacks to change them; `ProductList` only receives the filtered `products` array.
 
 `App` renders `Header`, then a two-column grid with `Sidebar` and `ProductList`, followed by `Newsletter` and `Footer`. `Sidebar` is built from `Panel`, `FilterSection`, `CheckboxOption` and `PromoCard`. `ProductList` is a `Panel` that maps the `products` array to `ProductCard`s and ends with `Pagination`. `Logo` is shared by `Header` and `Footer`.
+
+## Managing products with useReducer
+
+`App` keeps the product list in `useReducer(productsReducer, initialProducts)` instead of importing a fixed array. Components never change the list themselves: they call `onAddProduct` or `onDeleteProduct`, and `App` turns those into `added` and `deleted` actions for `productsReducer` (`src/productsReducer.ts`). The reducer returns a new array each time, gives new products the next free id, and puts them first so "Newest" shows them at the top.
+
+New products get the "New Arrival" badge, are in stock, and have no rating yet (the card hides the star until there is one). Deleting the last product in a category also unticks that category, so a hidden checkbox never keeps filtering. The price filter uses `null` for "no limit", so a newly added product above the old top price still shows. Changes last until the page reloads.
 
 ## Dark mode with useContext
 

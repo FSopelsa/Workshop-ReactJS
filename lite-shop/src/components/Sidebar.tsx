@@ -1,5 +1,4 @@
 import { ChevronDown } from 'lucide-react'
-import { highestPrice } from '../data/products'
 import type { Filters, Product } from '../types'
 import CheckboxOption from './CheckboxOption'
 import FilterSection from './FilterSection'
@@ -14,6 +13,8 @@ interface SidebarProps {
 
 export default function Sidebar({ products, filters, onFiltersChange }: SidebarProps) {
   const categories = [...new Set(products.map((product) => product.category))]
+  const highestPrice = Math.max(0, ...products.map((product) => product.price))
+  const sliderValue = filters.maxPrice ?? highestPrice
 
   // Copy the current filters and overwrite only the changed fields
   const updateFilters = (changes: Partial<Filters>) => onFiltersChange({ ...filters, ...changes })
@@ -61,14 +62,17 @@ export default function Sidebar({ products, filters, onFiltersChange }: SidebarP
         <FilterSection title="Price Range" spacing="space-y-3">
           <div className="flex items-center justify-between text-xs text-slate-500">
             <span>0 kr</span>
-            <span>Up to {filters.maxPrice} kr</span>
+            <span>Up to {sliderValue} kr</span>
           </div>
           <input
             type="range"
             min={0}
             max={highestPrice}
-            value={filters.maxPrice}
-            onChange={(event) => updateFilters({ maxPrice: Number(event.target.value) })}
+            value={sliderValue}
+            onChange={(event) => {
+              const value = Number(event.target.value)
+              updateFilters({ maxPrice: value >= highestPrice ? null : value })
+            }}
             className="w-full accent-blue-500"
             aria-label="Maximum price"
           />

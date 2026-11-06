@@ -72,5 +72,3 @@ export const products: Product[] = [
     price: 1100,
   },
 ]
-
-export const highestPrice = Math.max(...products.map((product) => product.price))

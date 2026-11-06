@@ -1,8 +1,9 @@
-import { Eye, Heart, Plus, Star } from 'lucide-react'
+import { Eye, Heart, Plus, Star, Trash2 } from 'lucide-react'
 import type { BadgeTone, Product, StockStatus } from '../types'
 
 interface ProductCardProps {
   product: Product
+  onDelete: (id: number) => void
 }
 
 const badgeStyles: Record<BadgeTone, string> = {
@@ -25,8 +26,8 @@ const overlayButtons = [
 
 const formatPrice = (price: number) => `${price.toLocaleString('en-US')} kr`
 
-export default function ProductCard({ product }: ProductCardProps) {
-  const { name, category, image, rating, badge, stockStatus, stockText, price, originalPrice } = product
+export default function ProductCard({ product, onDelete }: ProductCardProps) {
+  const { id, name, category, image, rating, badge, stockStatus, stockText, price, originalPrice } = product
   const soldOut = stockStatus === 'sold-out'
 
   return (
@@ -73,15 +74,28 @@ export default function ProductCard({ product }: ProductCardProps) {
             className="transition-colors group-hover/heart:fill-rose-500 group-hover/heart:stroke-rose-500"
           />
         </button>
+
+        <button
+          type="button"
+          onClick={() => onDelete(id)}
+          className="absolute right-3 top-15 inline-flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200/50 bg-white/70 text-slate-600 backdrop-blur-md transition-all duration-300 hover:bg-white hover:text-rose-500 hover:shadow-lg"
+          aria-label={`Delete ${name}`}
+          title="Delete product"
+        >
+          <Trash2 size={20} />
+        </button>
       </div>
 
       <div className="mt-4 px-1 pb-2 space-y-1">
         <div className="flex items-center justify-between">
           <p className="text-[10px] font-black uppercase tracking-[0.15em] text-blue-600/70">{category}</p>
-          <div className="flex items-center gap-1">
-            <Star size={10} strokeWidth={0} fill="currentColor" className="text-amber-400" />
-            <span className="text-[10px] font-bold text-slate-400">{rating}</span>
-          </div>
+          {/* Newly added products have no rating yet */}
+          {rating > 0 && (
+            <div className="flex items-center gap-1">
+              <Star size={10} strokeWidth={0} fill="currentColor" className="text-amber-400" />
+              <span className="text-[10px] font-bold text-slate-400">{rating}</span>
+            </div>
+          )}
         </div>
 
         <h3 className="text-sm font-bold text-slate-900 dark:text-white group-hover:text-blue-600 transition-colors">{name}</h3>

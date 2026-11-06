@@ -5,7 +5,8 @@ export type StockStatus = 'in-stock' | 'low' | 'sold-out'
 export interface Filters {
   // An empty list means "All Products"
   categories: string[]
-  maxPrice: number
+  // null means no upper limit, so newly added expensive products still show
+  maxPrice: number | null
   inStock: boolean
   onSale: boolean
 }
