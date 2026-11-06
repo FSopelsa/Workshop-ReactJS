@@ -5,13 +5,15 @@ interface IconButtonProps {
   children: ReactNode
   className?: string
   onClick?: () => void
+  expanded?: boolean
 }
 
-export default function IconButton({ label, children, className = '', onClick }: IconButtonProps) {
+export default function IconButton({ label, children, className = '', onClick, expanded }: IconButtonProps) {
   return (
     <button
       type="button"
       aria-label={label}
+      aria-expanded={expanded}
       title={label}
       onClick={onClick}
       className={`inline-flex h-10 w-10 items-center justify-center rounded-[0.75rem] bg-blue-500/30 text-blue-50 transition-all duration-200 hover:text-white hover:bg-blue-500/50 border border-blue-400/20 ${className}`}

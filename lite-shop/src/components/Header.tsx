@@ -1,4 +1,5 @@
-import { Menu, Moon, Search, ShoppingBag, Sun, User } from 'lucide-react'
+import { Menu, Moon, Search, ShoppingBag, Sun, User, X } from 'lucide-react'
+import { useState } from 'react'
 import { useTheme } from '../theme'
 import IconButton from './IconButton'
 import Logo from './Logo'
@@ -10,8 +11,31 @@ interface HeaderProps {
   onSearchChange: (value: string) => void
 }
 
+interface SearchFieldProps extends HeaderProps {
+  className: string
+  inputClassName: string
+}
+
+// Rendered twice: in the top bar from the sm breakpoint, and in the mobile menu below it
+function SearchField({ search, onSearchChange, className, inputClassName }: SearchFieldProps) {
+  return (
+    <div className={`relative ${className}`}>
+      <input
+        type="search"
+        value={search}
+        onChange={(event) => onSearchChange(event.target.value)}
+        placeholder="Search products..."
+        aria-label="Search products"
+        className={`h-10 rounded-[0.75rem] bg-blue-500/30 pl-10 pr-4 text-xs font-medium text-blue-50 placeholder:text-blue-200/50 border border-blue-400/20 focus:bg-blue-500/50 transition-all duration-300 outline-none ${inputClassName}`}
+      />
+      <Search size={16} strokeWidth={2.5} className="absolute left-3.5 top-3 text-blue-200" />
+    </div>
+  )
+}
+
 export default function Header({ search, onSearchChange }: HeaderProps) {
   const { theme, toggleTheme } = useTheme()
+  const [menuOpen, setMenuOpen] = useState(false)
 
   return (
     <header className="sticky top-0 z-40 border-b border-blue-700/30 bg-blue-600 shadow-lg shadow-blue-900/10">
@@ -40,17 +64,12 @@ export default function Header({ search, onSearchChange }: HeaderProps) {
               <span className="text-[10px] font-black uppercase tracking-widest text-blue-50">Live</span>
             </div>
 
-            <div className="relative hidden sm:block">
-              <input
-                type="search"
-                value={search}
-                onChange={(event) => onSearchChange(event.target.value)}
-                placeholder="Search products..."
-                aria-label="Search products"
-                className="h-10 w-48 rounded-[0.75rem] bg-blue-500/30 pl-10 pr-4 text-xs font-medium text-blue-50 placeholder:text-blue-200/50 border border-blue-400/20 focus:bg-blue-500/50 focus:w-64 transition-all duration-300 outline-none"
-              />
-              <Search size={16} strokeWidth={2.5} className="absolute left-3.5 top-3 text-blue-200" />
-            </div>
+            <SearchField
+              search={search}
+              onSearchChange={onSearchChange}
+              className="hidden sm:block"
+              inputClassName="w-48 focus:w-64"
+            />
 
             <IconButton label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'} onClick={toggleTheme}>
               {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
@@ -61,11 +80,29 @@ export default function Header({ search, onSearchChange }: HeaderProps) {
             <IconButton label="Account">
               <User size={20} />
             </IconButton>
-            <IconButton label="Menu" className="md:hidden">
-              <Menu size={24} strokeWidth={2.5} />
+            <IconButton
+              label={menuOpen ? 'Close menu' : 'Open menu'}
+              expanded={menuOpen}
+              onClick={() => setMenuOpen(!menuOpen)}
+              className="md:hidden"
+            >
+              {menuOpen ? <X size={24} strokeWidth={2.5} /> : <Menu size={24} strokeWidth={2.5} />}
             </IconButton>
           </div>
         </div>
+
+        {menuOpen && (
+          <div className="md:hidden space-y-3 border-t border-blue-500/40 py-4">
+            <SearchField search={search} onSearchChange={onSearchChange} className="sm:hidden" inputClassName="w-full" />
+            <nav className="flex flex-col gap-1 text-sm font-bold text-blue-100">
+              {navLinks.map((link) => (
+                <a key={link} href="#" className="rounded-lg px-3 py-2 transition-colors hover:bg-blue-500/50 hover:text-white">
+                  {link}
+                </a>
+              ))}
+            </nav>
+          </div>
+        )}
       </div>
     </header>
   )

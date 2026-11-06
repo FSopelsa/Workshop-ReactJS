@@ -45,9 +45,9 @@ src/
 | Component | Purpose | Props |
 | --- | --- | --- |
 | `App` | Page layout: header, sidebar + product list, newsletter, footer. Holds the search text and a `filters` object (categories, max price, in stock, on sale) in `useState` and filters the products. A `useEffect` keeps the browser tab title in sync with the number of matching products. | – |
-| `Header` | Sticky top bar with logo, nav links, controlled search field, dark/light toggle (reads `useTheme()`) and icon buttons. | `search`, `onSearchChange` |
+| `Header` | Sticky top bar with logo, nav links, controlled search field, dark/light toggle (reads `useTheme()`) and icon buttons. Below the `md` breakpoint the Menu button opens a panel with the nav links, plus the search field on phones where the top-bar one is hidden (`menuOpen` state). | `search`, `onSearchChange` |
 | `Logo` | Brand logo, used in the header and the footer. | `variant` (`'light'` or `'dark'`) |
-| `IconButton` | Square icon button (theme toggle, cart, account, mobile menu). | `label`, `children` (the icon), `className?`, `onClick?` |
+| `IconButton` | Square icon button (theme toggle, cart, account, mobile menu). | `label`, `children` (the icon), `className?`, `onClick?`, `expanded?` |
 | `ThemeProvider` | Holds the current theme in `useState`, shares it through `ThemeContext`, and toggles the `dark` class on `<html>` in a `useEffect`. | `children` |
 | `Panel` | Rounded, bordered card container shared by the sidebar and the product list. | `children` |
 | `Sidebar` | Filter column: categories, price range, availability and promo card. Category names, counts and the slider's maximum are computed from the product data. | `products`, `filters`, `onFiltersChange` |
@@ -75,7 +75,7 @@ State lives in `App`, the closest common parent of the components that use it. `
 
 ## Dark mode with useContext
 
-`main.tsx` wraps `App` in `ThemeProvider`. Any component can call `useTheme()` to read `theme` and `toggleTheme` without props being passed through every level; today only `Header` does, for its toggle button. Components style themselves with Tailwind `dark:` classes, which apply when `<html>` has the `dark` class. The first theme follows the operating system setting.
+`main.tsx` wraps `App` in `ThemeProvider`. Any component can call `useTheme()` to read `theme` and `toggleTheme` without props being passed through every level; today only `Header` does, for its toggle button. Components style themselves with Tailwind `dark:` classes, which apply when `<html>` has the `dark` class. The chosen theme is saved in `localStorage`, so it survives a reload; with nothing saved, the first theme follows the operating system setting.
 
 ## Notes
 
